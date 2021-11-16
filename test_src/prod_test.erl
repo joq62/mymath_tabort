@@ -55,35 +55,14 @@ pass_0()->
     % Controller part
     loader:load_services(),
     
-    {ok,MathPid}=mymath:start(),
-    42=lrpc(MathPid,{myadd,add,[20,22]},1000),
-    2.0=lrpc(MathPid,{mydivi,divi,[20,10]},1000),
-    lrpc(MathPid,{mymath,stop,add},1000),
-    lrpc(MathPid,{mymath,stop,divi},1000),
-    timer:sleep(1000),
+    ok=application:start(mymath),
+    42=mymath:add(20,22),
+    2.0=mymath:divi(20,10),
 
-  %  lrpc(MathPid,{mydivi,divi,[20,0]},1000),
-  %  timer:sleep(10000),
-    0.4=lrpc(MathPid,{mydivi,divi,[20,50]},10000),
+    {badrpc,_Reason}=mymath:divi(20,0),
+    0.5=mymath:divi(5,10),
     ok.
 
-lrpc(Pid,{M,F,A},Timeout)->
-    
-    Result=case erlang:is_process_alive(Pid) of
-	       false->
-		   {error,[Pid,is_not_alive]};
-	       true->
-		   Pid!{self(),{M,F,A}},
-		   receive
-		       {Pid,R}->
-			   R;
-		       X->
-			   io:format("X ~p~n",[{X,?MODULE,?FUNCTION_NAME,?LINE}])
-		   after Timeout->
-			   {error,[timeout,M,F,A,?MODULE,?LINE]}
-		   end
-	   end,
-    Result.
 %% --------------------------------------------------------------------
 %% Function:start/0 
 %% Description: Initiate the eunit tests, set upp needed processes etc
