@@ -2,8 +2,6 @@ all:
 #	service
 	rm -rf ebin/* *~ */*~ ;
 	rm -rf balcony my_services service_catalog test_ebin;
-#	loader
-	erlc -o ebin ../../infra/controller/src/loader.erl;
 #	application
 	cp src/*.app ebin;
 	erlc -o ebin src/*.erl;
