@@ -24,7 +24,7 @@
 %% 
 %% --------------------------------------------------------------------
 -record(state, {
-	       refs}).
+	       }).
 
 
 
@@ -91,17 +91,9 @@ divi(A,B)->
 %
 %% --------------------------------------------------------------------
 init([]) ->
-    {ok,AddNode}=loader:allocate(myadd),
+  
     
-    true=erlang:monitor_node(AddNode,true),
-    io:format("AddNode ~p~n",[{AddNode}]),
-    {ok,DiviNode}=loader:allocate(mydivi),
-    io:format("DiviNode ~p~n",[{DiviNode}]),
-    true=erlang:monitor_node(DiviNode,true),
-    
-    
-    {ok, #state{refs=[{AddNode,myadd},
-		      {DiviNode,mydivi}]}}.
+    {ok, #state{}}.
     
 %% --------------------------------------------------------------------
 %% Function: handle_call/3
@@ -114,13 +106,13 @@ init([]) ->
 %%          {stop, Reason, State}            (aterminate/2 is called)
 %% --------------------------------------------------------------------
 handle_call({add,A,B},_From,State) ->
-    {Node,App}=lists:keyfind(myadd,2,State#state.refs),
-    Reply=rpc:call(Node,App,add,[A,B],5*1000),
+    [Node|_]=sd:get(myadd),
+    Reply=rpc:call(Node,myapp,add,[A,B],5*1000),
     {reply, Reply, State};
 
 handle_call({divi,A,B},_From,State) ->
-    {Node,App}=lists:keyfind(mydivi,2,State#state.refs),
-    Reply=rpc:call(Node,App,divi,[A,B],5*1000),
+    [Node|_]=sd:get(mydivi),
+    Reply=rpc:call(Node,mydivi,divi,[A,B],5*1000),
     {reply, Reply, State};
 
 handle_call({ping},_From,State) ->
