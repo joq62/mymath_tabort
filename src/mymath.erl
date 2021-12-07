@@ -107,7 +107,7 @@ init([]) ->
 %% --------------------------------------------------------------------
 handle_call({add,A,B},_From,State) ->
     [Node|_]=sd:get(myadd),
-    Reply=rpc:call(Node,myapp,add,[A,B],5*1000),
+    Reply=rpc:call(Node,myadd,add,[A,B],5*1000),
     {reply, Reply, State};
 
 handle_call({divi,A,B},_From,State) ->
