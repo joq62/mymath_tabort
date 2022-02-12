@@ -10,6 +10,5 @@
 {mod, {mymath_app,[]}},
 {start_phases, []},
 {git_path,"https://github.com/joq62/mymath.git"},
-{env,[]},
-{hosts_needed,[]}
+{constraints,[]}  %{hw,hw_spec}|{port,port_num}
 ]}.
